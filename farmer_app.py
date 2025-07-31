@@ -90,4 +90,7 @@ if user_input:
     st.session_state.messages.append(("user", user_input))
     response = get_response(user_input)
     st.session_state.messages.append(("bot", response))
-    st.experimental_rerun()
+    
+    # Display immediately without rerun
+    st.markdown(f"<div class='chat-bubble user'>{user_input}</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='chat-bubble bot'>{response}</div>", unsafe_allow_html=True)
