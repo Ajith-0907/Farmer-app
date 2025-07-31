@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.set_page_config(page_title="రైతు సహాయక చాట్‌బాట్", layout="centered")
+st.set_page_config(page_title="రైతు సహాయక చాట్‌బాట్", layout="wide")
 
 # Telugu knowledge base with additional info and YouTube links
 knowledge_base = {
@@ -33,7 +33,16 @@ knowledge_base = {
     }
 }
 
-# Logic to get response
+# Crop-specific help
+crop_tips = {
+    "వరి (Rice)": "పురుగు నివారణకు: కార్టాప్ హైడ్రోక్లోరైడ్, మాంకోజెబ్. [Rice Farming Video](https://www.youtube.com/watch?v=9K7Oss66WqY)",
+    "కాటన్ (Cotton)": "సజావుగా పెరగటానికి: యూరియా + సూపర్ ఫాస్ఫేట్. [Cotton Pest Video](https://www.youtube.com/watch?v=l4t14RGrKzI)",
+    "మిరప (Chilli)": "వ్యాధుల నివారణకు: కార్బెండజిమ్, ఆజొక్సీస్ట్రోబిన్. [Chilli Guide](https://www.youtube.com/watch?v=tDrx4Qgk1XE)",
+    "జొన్న (Jowar)": "జొన్నకు పురుగు నివారణ: Neem Oil Spray. [Jowar Farming](https://www.youtube.com/watch?v=IdRYwD34HLs)",
+    "సెనగ (Chana)": "రాగు మరియు కొబ్బరి నీరు వాడితే ఫంగస్ తగ్గుతుంది. [Chana Video](https://www.youtube.com/watch?v=0sZo1gF8flE)"
+}
+
+# Response function
 def get_response(message):
     message = message.lower()
     if any(word in message for word in ["హాయ్", "హలో", "నమస్తే"]):
@@ -47,50 +56,53 @@ def get_response(message):
                 return info['response']
     return knowledge_base['default']['response']
 
-# Chat history
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
+# Layout
 st.title("🌾 రైతు సహాయక చాట్‌బాట్")
-st.markdown("""
-<style>
-.chat-bubble {
-    border-radius: 15px;
-    padding: 10px 15px;
-    margin: 10px 0;
-    display: inline-block;
-    max-width: 80%;
-}
-.user {
-    background-color: #e3f2fd;
-    margin-left: auto;
-    text-align: right;
-    border-bottom-right-radius: 5px;
-}
-.bot {
-    background-color: #f1f1f1;
-    margin-right: auto;
-    text-align: left;
-    border-bottom-left-radius: 5px;
-}
-</style>
-""", unsafe_allow_html=True)
+col1, col2 = st.columns([3, 1])
 
-# Display previous messages
-for role, text in st.session_state.messages:
-    if role == "user":
-        st.markdown(f"<div class='chat-bubble user'>{text}</div>", unsafe_allow_html=True)
-    else:
-        st.markdown(f"<div class='chat-bubble bot'>{text}</div>", unsafe_allow_html=True)
+with col1:
+    st.markdown("""
+    <style>
+    .chat-bubble {
+        border-radius: 15px;
+        padding: 10px 15px;
+        margin: 10px 0;
+        display: inline-block;
+        max-width: 80%;
+    }
+    .user {
+        background-color: #e3f2fd;
+        margin-left: auto;
+        text-align: right;
+        border-bottom-right-radius: 5px;
+    }
+    .bot {
+        background-color: #f1f1f1;
+        margin-right: auto;
+        text-align: left;
+        border-bottom-left-radius: 5px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
-# Chat input
-user_input = st.chat_input("మీ ప్రశ్నను ఇక్కడ టైప్ చేయండి...")
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
 
-if user_input:
-    st.session_state.messages.append(("user", user_input))
-    response = get_response(user_input)
-    st.session_state.messages.append(("bot", response))
-    
-    # Display immediately without rerun
-    st.markdown(f"<div class='chat-bubble user'>{user_input}</div>", unsafe_allow_html=True)
-    st.markdown(f"<div class='chat-bubble bot'>{response}</div>", unsafe_allow_html=True)
+    for role, text in st.session_state.messages:
+        if role == "user":
+            st.markdown(f"<div class='chat-bubble user'>{text}</div>", unsafe_allow_html=True)
+        else:
+            st.markdown(f"<div class='chat-bubble bot'>{text}</div>", unsafe_allow_html=True)
+
+    user_input = st.chat_input("మీ ప్రశ్నను ఇక్కడ టైప్ చేయండి...")
+    if user_input:
+        st.session_state.messages.append(("user", user_input))
+        response = get_response(user_input)
+        st.session_state.messages.append(("bot", response))
+        st.experimental_rerun()
+
+with col2:
+    st.markdown("## 📌 పంటలు")
+    for crop, tip in crop_tips.items():
+        with st.expander(crop):
+            st.markdown(tip, unsafe_allow_html=True)
