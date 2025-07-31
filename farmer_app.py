@@ -1,5 +1,4 @@
 import streamlit as st
-from streamlit.components.v1 import html
 
 st.set_page_config(page_title="రైతు సహాయక చాట్‌బాట్", layout="centered")
 
@@ -19,7 +18,7 @@ knowledge_base = {
     },
     "weather": {
         "keywords": ["వాతావరణం", "వర్షం", "కరువు", "చలికాలం"],
-        "response": "స్థానిక వాతావరణాన్ని గమనించండి. కరువు కోసం డ్రిప్ ఇరిగేషన్ వాడండి; చలికాలం నివారణకు షీట్లు లేదా స్ప్రింక్‌లర్ వాడండి."
+        "response": "స్థానిక వాతావరణాన్ని గమనించండి. కరువు కోసం డ్రిప్ ఇరిగేషన్ వాడండి; చలికాలం నివారణకు షీట్లు లేదా స్ప్రింక్లర్ వాడండి."
     },
     "crop selection": {
         "keywords": ["పంట", "విత్తనాలు", "ఎంపిక", "కృషి"],
@@ -34,73 +33,43 @@ knowledge_base = {
     }
 }
 
-# Function to generate response
+
+# Logic to get response
 def get_response(message):
     message = message.lower()
     if any(word in message for word in ["హాయ్", "హలో", "నమస్తే"]):
         return "హలో! నేను మీ వ్యవసాయ సహాయకుడు. ఎలా సహాయం చేయగలను?"
     if any(word in message for word in ["ధన్యవాదాలు", "ధన్యవాదం", "థ్యాంక్స్"]):
         return "మీకు స్వాగతం! ఇంకా ఏవైనా సందేహాలు ఉన్నాయా?"
+
     for topic, info in knowledge_base.items():
         if topic != 'default':
             if any(keyword in message for keyword in info['keywords']):
                 return info['response']
     return knowledge_base['default']['response']
 
-# Injecting custom HTML UI
-custom_ui = """
-    <div class="container" style="font-family: 'Segoe UI'; max-width: 800px; margin: auto;">
-        <h1 style="text-align: center; color: #2e7d32;">రైతు సహాయక చాట్‌బాట్</h1>
-        <div id="chat-box" style="background-color: white; border-radius: 10px; padding: 20px; height: 500px; overflow-y: scroll; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);"></div>
-        <div style="display: flex; margin-top: 10px;">
-            <input id="user-input" type="text" placeholder="మీ ప్రశ్నను ఇక్కడ టైప్ చేయండి..." style="flex: 1; padding: 10px; border-radius: 20px; border: 1px solid #ccc;" onkeydown="if(event.key === 'Enter'){sendMessage()}"/>
-            <button onclick="sendMessage()" style="margin-left: 10px; padding: 10px 20px; border-radius: 20px; background-color: #4caf50; color: white; border: none;">పంపించండి</button>
-        </div>
-    </div>
 
-    <script>
-        function sendMessage() {
-            var input = document.getElementById('user-input');
-            var message = input.value.trim();
-            if (message === '') return;
-            var chatBox = document.getElementById('chat-box');
-            chatBox.innerHTML += `<div style='text-align: right; margin: 10px;'><span style='background-color: #e3f2fd; padding: 10px 15px; border-radius: 18px; display: inline-block;'>${message}</span></div>`;
-            fetch('/chatbot', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({message: message})})
-                .then(response => response.json())
-                .then(data => {
-                    chatBox.innerHTML += `<div style='text-align: left; margin: 10px;'><span style='background-color: #f1f1f1; padding: 10px 15px; border-radius: 18px; display: inline-block;'>${data.response}</span></div>`;
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                });
-            input.value = '';
-        }
-    </script>
-"""
+# Chat history
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-# Handle Streamlit POST route
-from streamlit_javascript import st_javascript
-import json
+st.title("🌾 రైతు సహాయక చాట్‌బాట్")
 
-query = st_javascript("""
-    if (!window.responseBuffer) {
-        window.responseBuffer = [];
-        const originalFetch = window.fetch;
-        window.fetch = function() {
-            const args = arguments;
-            if (args[0] === '/chatbot') {
-                return new Promise(resolve => {
-                    const reader = new Response(JSON.stringify({response: window.lastResponse || 'లోపం. ప్రయత్నించండి.'})).body.getReader();
-                    resolve(new Response(reader.read().then(({value}) => new Uint8Array(value))));
-                });
-            }
-            return originalFetch.apply(this, args);
-        }
-    }
-    """)
+# Display previous messages
+for msg in st.session_state.messages:
+    role, text = msg
+    with st.chat_message(role):
+        st.markdown(text)
 
-# Display custom HTML UI
-tmp = html(custom_ui, height=700)
+# Chat input
+user_input = st.chat_input("మీ ప్రశ్నను ఇక్కడ టైప్ చేయండి...")
 
-# Receive user input via Streamlit's chat API
-if st.query_params.get("message"):
-    msg = st.query_params.get("message")
-    st.write(json.dumps({"response": get_response(msg)}))
+if user_input:
+    # Display user message
+    st.chat_message("user").markdown(user_input)
+    st.session_state.messages.append(("user", user_input))
+
+    # Get bot response
+    response = get_response(user_input)
+    st.chat_message("assistant").markdown(response)
+    st.session_state.messages.append(("assistant", response))
