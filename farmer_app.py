@@ -88,18 +88,17 @@ with col1:
     if "messages" not in st.session_state:
         st.session_state.messages = []
 
-    for role, text in st.session_state.messages:
-        if role == "user":
-            st.markdown(f"<div class='chat-bubble user'>{text}</div>", unsafe_allow_html=True)
-        else:
-            st.markdown(f"<div class='chat-bubble bot'>{text}</div>", unsafe_allow_html=True)
-
     user_input = st.chat_input("మీ ప్రశ్నను ఇక్కడ టైప్ చేయండి...")
     if user_input:
         st.session_state.messages.append(("user", user_input))
         response = get_response(user_input)
         st.session_state.messages.append(("bot", response))
-        st.experimental_rerun()
+
+    for role, text in st.session_state.messages:
+        if role == "user":
+            st.markdown(f"<div class='chat-bubble user'>{text}</div>", unsafe_allow_html=True)
+        else:
+            st.markdown(f"<div class='chat-bubble bot'>{text}</div>", unsafe_allow_html=True)
 
 with col2:
     st.markdown("## 📌 పంటలు")
