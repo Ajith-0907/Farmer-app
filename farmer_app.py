@@ -116,11 +116,13 @@ with col1:
 
     for role, text in st.session_state.messages:
         css_class = "user" if role == "user" else "bot"
-        st.markdown(f"<div class='chat-bubble {css_class}'>{text}</div>", unsafe_allow_html=True)
+        if css_class == "bot":
+            st.markdown(f"<div class='chat-bubble {css_class}'>{text}</div>", unsafe_allow_html=True)
+        else:
+            st.markdown(f"<div class='chat-bubble {css_class}'>{text}</div>", unsafe_allow_html=True)
 
 with col2:
     st.markdown("## 📌 పంటలు")
     for crop, tip in crop_tips.items():
         with st.expander(crop):
             st.markdown(tip, unsafe_allow_html=True)
-
