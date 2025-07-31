@@ -56,11 +56,12 @@ def get_response(message):
     }
 
     general_links = {
-        "పురుగు": "<br><a href='https://www.youtube.com/watch?v=AieFCNubgVg' target='_blank'>👉 పురుగు నివారణ వీడియో</a>",
+        "పురుగు": "<br><a href='https://www.youtube.com/watch?v=tyqsbE8hslE' target='_blank'>👉 పురుగు నివారణ వీడియో</a>",
         "వ్యాధి": "<br><a href='https://www.youtube.com/watch?v=tDrx4Qgk1XE' target='_blank'>👉 వ్యాధి నివారణ వీడియో</a>",
         "ఎరువు": "<br><a href='https://www.youtube.com/watch?v=epMl43O3gts' target='_blank'>👉 ఎరువుల సమాచారం వీడియో</a>",
-        "వాతావరణం": "<br><a href='https://www.youtube.com/watch?v=tE1jvpwmyiU' target='_blank'>👉 వాతావరణ సూచనలు వీడియో</a>",
-        "నీరు": "<br><a href='https://www.youtube.com/watch?v=6At-n-B1Bjc' target='_blank'>👉 నీటిపారుదల వీడియో</a>"
+        "వాతావరణం": "<br><a href='https://www.youtube.com/watch?v=majAdTK7758' target='_blank'>👉 వాతావరణ సూచనలు వీడియో</a>",
+        "నీరు": "<br><a href='https://www.youtube.com/watch?v=6At-n-B1Bjc' target='_blank'>👉 నీటిపారుదల వీడియో</a>",
+        "drip": "<br><a href='https://www.youtube.com/watch?v=ikAoMn93mEw' target='_blank'>👉 Drip Irrigation System Video</a>"
     }
 
     keyword_pool = {
