@@ -51,27 +51,33 @@ col1, col2 = st.columns([3, 1])
 with col1:
     st.markdown("""
     <style>
-    .chat-bubble {
-        border-radius: 15px;
-        padding: 10px 15px;
-        margin: 10px 0;
-        display: inline-block;
-        max-width: 80%;
-        font-size: 0.9rem;
-    }
-    .user {
-        background-color: #e3f2fd;
-        margin-left: auto;
-        text-align: right;
-        border-bottom-right-radius: 5px;
-    }
-    .bot {
-        background-color: #f1f1f1;
-        margin-right: auto;
-        text-align: left;
-        border-bottom-left-radius: 5px;
-    }
-    </style>
+body, .stApp {
+    background-color: #f9f9f9;
+    color: #111;
+}
+.chat-bubble {
+    border-radius: 15px;
+    padding: 10px 15px;
+    margin: 10px 0;
+    display: inline-block;
+    max-width: 80%;
+    font-size: 0.9rem;
+}
+.user {
+    background-color: #d0e8ff;
+    color: #000;
+    margin-left: auto;
+    text-align: right;
+    border-bottom-right-radius: 5px;
+}
+.bot {
+    background-color: #f1f1f1;
+    color: #000;
+    margin-right: auto;
+    text-align: left;
+    border-bottom-left-radius: 5px;
+}
+</style>
     """, unsafe_allow_html=True)
 
     if "messages" not in st.session_state:
