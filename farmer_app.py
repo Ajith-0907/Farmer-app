@@ -63,6 +63,10 @@ col1, col2 = st.columns([3, 1])
 with col1:
     st.markdown("""
     <style>
+    body, .stApp {
+        background-color: #f5f5f5;
+        color: #212121;
+    }
     .chat-bubble {
         border-radius: 15px;
         padding: 10px 15px;
